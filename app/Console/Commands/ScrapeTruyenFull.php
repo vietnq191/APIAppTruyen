@@ -47,9 +47,9 @@ class ScrapeTruyenFull extends Command
         //Last number paginate of https://truyenfull.vn/danh-sach/truyen-full
         $lastPage = 650;
         // Xong 47 trang rồi
-        for ($number = 48; $number <= 50; $number++) {
+        for ($number = 1; $number <= 5; $number++) {
             printf("Page " . $number . "\n");
-            $crawler = GoutteFacade::request('GET', 'https://truyenfull.vn/danh-sach/truyen-full/trang-' . $number);
+            $crawler = GoutteFacade::request('GET', 'https://truyenfull.vn/danh-sach/truyen-moi/trang-' . $number);
             $links = $crawler->filter('h3.truyen-title>a')->each(function ($node) {
                 return $node->attr("href");
             });
@@ -77,13 +77,6 @@ class ScrapeTruyenFull extends Command
         $image = "";
         $status = 1;
 
-        if (
-            $link == "https://truyenfull.vn/sau-khi-xuyen-khong-toi-van-la-nguoi-thay-the/"
-            || $link == "https://truyenfull.vn/xuyen-nhanh-nu-dac-cong-toan-nang/"
-            || $link == "https://truyenfull.vn/loai-chim-khong-chan/"
-        ) {
-            return null;
-        }
         print($link . "\n");
         $crawler = GoutteFacade::request('GET', $link);
 
@@ -119,7 +112,7 @@ class ScrapeTruyenFull extends Command
             $content = file_get_contents($image);
             $extension = pathinfo(parse_url($image, PHP_URL_PATH), PATHINFO_EXTENSION);
             $filename = md5(time() . '_' . Str::random(10)) . pathinfo(parse_url($image, PHP_URL_PATH), PATHINFO_FILENAME);;
-            $filePath = 'images/';
+            $filePath = 'public/';
 
             $uploaded = Storage::disk('local')->put($filePath . $filename . "." . $extension, $content);
             $image_url = Storage::disk('local')->url($filePath . $filename . "." . $extension);
@@ -152,6 +145,16 @@ class ScrapeTruyenFull extends Command
 
         foreach ($sources as $source) {
             $source = $source;
+        }
+
+        //status
+        $status_not_full = $crawler->filter('.info>div>span.text-primary')->each(function ($node) {
+            return $node->text();
+        });
+
+        if($status_not_full)
+        {
+            $status = 0;
         }
 
         //Save data to database

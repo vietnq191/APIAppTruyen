@@ -15,6 +15,11 @@ class StoryController extends Controller
     {
         $stories = Story::with('getAuthor')->with('getCategories.getCategory:id,category_name')
             ->filter($request->all())->sort($request->all())->paginate();
+
+        foreach($stories as $story)
+        {
+            $story->image = asset($story->image);
+        }
         return response($stories);
     }
 
@@ -25,12 +30,17 @@ class StoryController extends Controller
             $query->where('category_id', $request->id);
         })
         ->filter($request->all())->sort($request->all())->paginate();
+        foreach($stories as $story)
+        {
+            $story->image = asset($story->image);
+        }
         return response($stories);
     }
 
     public function show(GetStoryRequest $request)
     {
         $story = Story::where('id', $request->id)->with('getAuthor')->with('getCategories.getCategory:id,category_name')->with('getChapters:id,story_id,title')->get();
+        $story->image = asset($story->image);
         return response($story);
     }
 
