@@ -19,6 +19,7 @@ class StoryController extends Controller
         foreach($stories as $story)
         {
             $story->image = asset($story->image);
+            $story->number_chapter = "Chương " . Chapter::where('story_id', $story->id)->count();
         }
         return response($stories);
     }
@@ -33,6 +34,7 @@ class StoryController extends Controller
         foreach($stories as $story)
         {
             $story->image = asset($story->image);
+            $story->number_chapter = "Chương " . Chapter::where('story_id', $story->id)->count();
         }
         return response($stories);
     }
