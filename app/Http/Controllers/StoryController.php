@@ -41,14 +41,14 @@ class StoryController extends Controller
 
     public function show(GetStoryRequest $request)
     {
-        $story = Story::where('id', $request->id)->with('getAuthor')->with('getCategories.getCategory:id,category_name')->with('getChapters:id,story_id,title')->get();
+        $story = Story::where('id', $request->id)->with('getAuthor')->with('getCategories.getCategory:id,category_name')->with('getChapters:id,story_id,title')->first();
         $story->image = asset($story->image);
         return response($story);
     }
 
     public function getDetailChapter(GetDetailChapterRequest $request)
     {
-        $story = Chapter::where('story_id', $request->story_id)->where('id', $request->chapter_id)->get();
+        $story = Chapter::where('story_id', $request->story_id)->where('id', $request->chapter_id)->first();
         return response($story);
     }
 
