@@ -29,7 +29,7 @@ class GetDetailChapterRequest extends FormRequest
         return [
             'story_id' => [Rule::exists('stories', 'id')],
             'chapter_id' => [Rule::exists('chapters', 'id')],
-            'chapter' => [Rule::exists('chapters', $this->chapter_id)->where('story_id', $this->story_id)->whereNull('deleted_at')],
+            'chapter' => [Rule::exists('chapters', 'id')->where('story_id', $this->story_id)->whereNull('deleted_at')],
         ];
     }
 
@@ -38,6 +38,7 @@ class GetDetailChapterRequest extends FormRequest
         $this->merge([
             'story_id' => $this->story_id,
             'chapter_id' => $this->chapter_id,
+            'chapter' => $this->chapter_id,
         ]);
     }
 
