@@ -87,6 +87,12 @@ class ScrapeTruyenFull extends Command
         foreach ($titles as $title) {
             $title = $title;
         }
+        //Check story exist
+        $hasStory = Story::where('title', $title)->first();
+        if ($hasStory) {
+            return null;
+        }
+
         //Description
         $descriptions = $crawler->filter('.desc-text-full')->each(function ($node) {
             return $node->html();
